@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Dictionary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #EEF1F4;
+    --panel: #FFFFFF;
+    --ink: #14202B;
+    --ink-soft: #4A5A68;
+    --navy: #1F3864;
+    --teal: #3C6E71;
+    --amber: #B45309;
+    --amber-bg: #FDF3E7;
+    --danger: #B3261E;
+    --line: #D7DCE1;
+    --line-soft: #E7EBEE;
+    --radius: 3px;
+    --sidebar-w: 270px;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: 'Public Sans', -apple-system, sans-serif; line-height: 1.5;
+    display: flex; flex-direction: column; height: 100vh; overflow: hidden;
+  }
+  .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+
+  header.top {
+    background: var(--panel); border-bottom: 1px solid var(--line);
+    padding: 12px 20px; display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 8px; flex-shrink: 0;
+  }
+  .top-crumb { font-size: 13px; color: var(--ink-soft); }
+  .top-crumb strong { color: var(--navy); }
+  .top-crumb a { color: var(--teal); text-decoration: none; cursor: pointer; }
+  .top-crumb a:hover { text-decoration: underline; }
+  #signOutLink { font-size: 12.5px; color: var(--ink-soft); background: none; border: none; cursor: pointer; text-decoration: underline; }
+  #signOutLink:hover { color: var(--navy); }
+
+  .body-row { display: flex; flex: 1; min-height: 0; }
+
+  nav.sidebar {
+    width: var(--sidebar-w); flex-shrink: 0; background: var(--panel);
+    border-right: 1px solid var(--line); overflow-y: auto; padding: 10px 12px 24px;
+  }
+
+  .home-link {
+    display: flex; align-items: center; gap: 8px; padding: 9px 8px; margin-bottom: 8px;
+    border-radius: var(--radius); cursor: pointer; font-size: 13.5px; font-weight: 600; color: var(--navy);
+    border-bottom: 1px solid var(--line);
+  }
+  .home-link:hover { background: #F5F6F8; }
+  .home-link.active { background: #E7ECF3; }
+
+  .sensor-group { margin-bottom: 4px; margin-top: 8px; }
+  .sensor-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 6px;
+    padding: 8px 8px; cursor: pointer; border-radius: var(--radius); user-select: none;
+  }
+  .sensor-head:hover { background: #F5F6F8; }
+  .sensor-head-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .sensor-name { font-size: 13.5px; font-weight: 600; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sensor-chevron {
+    width: 7px; height: 7px; border-right: 1.5px solid var(--ink-soft); border-bottom: 1.5px solid var(--ink-soft);
+    transform: rotate(45deg); transition: transform 0.15s ease; flex-shrink: 0;
+  }
+  .sensor-group.collapsed .sensor-chevron { transform: rotate(-45deg); }
+  .sensor-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .icon-btn { font-size: 12px; line-height: 1; background: none; border: none; color: var(--ink-soft); cursor: pointer; padding: 2px 3px; }
+  .icon-btn:hover { color: var(--navy); }
+  .icon-btn.danger:hover { color: var(--danger); }
+
+  .form-list { list-style: none; margin: 2px 0 6px; padding: 0 0 0 18px; }
+  .sensor-group.collapsed .form-list { display: none; }
+  .form-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 6px;
+    padding: 7px 8px; border-radius: var(--radius); cursor: pointer; font-size: 13px; color: var(--ink-soft);
+  }
+  .form-item:hover { background: #F5F6F8; color: var(--ink); }
+  .form-item.active { background: #E7ECF3; color: var(--navy); font-weight: 600; }
+  .form-item-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .add-inline {
+    font-family: 'Public Sans', sans-serif; font-size: 12.5px; padding: 6px 8px;
+    border: 1px dashed var(--line); background: transparent; color: var(--ink-soft);
+    border-radius: var(--radius); cursor: pointer; width: 100%; text-align: left; margin-top: 4px;
+  }
+  .add-inline:hover { border-color: var(--teal); color: var(--teal); }
+
+  main.content { flex: 1; min-width: 0; overflow-y: auto; }
+  .page { max-width: 900px; margin: 0 auto; padding: 28px 24px 80px; }
+
+  /* Landing / directions page */
+  .home-hero h1 { font-size: 24px; color: var(--navy); margin: 0 0 6px; }
+  .home-hero p.lead { font-size: 14px; color: var(--ink-soft); margin: 0 0 24px; max-width: 640px; }
+
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 16px; }
+  .panel h2 { font-size: 14px; color: var(--navy); margin: 0 0 10px; }
+  .panel p { font-size: 13.5px; color: var(--ink-soft); margin: 0 0 12px; }
+  .panel ol, .panel ul { font-size: 13.5px; color: var(--ink-soft); margin: 0 0 12px; padding-left: 20px; }
+  .panel li { margin-bottom: 4px; }
+
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 5px 10px;
+    border-radius: 999px; border: 1px solid var(--line); color: var(--ink-soft); margin-bottom: 14px;
+  }
+  .status-pill.on { border-color: var(--teal); color: var(--teal); background: #EEF6F5; }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-soft); }
+  .status-pill.on .status-dot { background: var(--teal); }
+
+  button.action {
+    font-family: 'Public Sans', sans-serif; font-size: 13px; padding: 8px 12px;
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink-soft);
+    border-radius: var(--radius); cursor: pointer;
+  }
+  button.action:hover { border-color: var(--navy); color: var(--navy); }
+  button.action[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+  button.action-team { border-color: var(--teal); color: var(--teal); }
+  button.action-team:hover { background: var(--teal); color: #fff; }
+  button.action-danger { color: var(--danger); border-color: #EBC9C6; }
+  button.action-danger:hover { border-color: var(--danger); background: #FBEEEC; }
+
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  #csvUploadInput, #jsonImportInput { display: none; }
+
+  /* Form dashboard page */
+  .form-toolbar { display: flex; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; align-items: center; }
+  .form-toolbar input[type="search"], .form-toolbar select {
+    font-family: 'Public Sans', sans-serif; font-size: 13.5px; padding: 8px 10px;
+    border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); color: var(--ink);
+  }
+  .form-toolbar input[type="search"] { flex: 1 1 220px; min-width: 160px; }
+  .toggle-flagged { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-soft); white-space: nowrap; cursor: pointer; }
+  .toggle-flagged input { accent-color: var(--amber); }
+  .team-toolbar-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 10px 0 4px; }
+  .ctrl-divider { width: 1px; height: 20px; background: var(--line); margin: 0 2px; }
+
+  .form-header { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+  .form-header h1 { font-size: 20px; margin: 0; color: var(--navy); }
+  .form-header .subtitle { font-size: 13px; color: var(--ink-soft); margin: 2px 0 0; }
+  .counts { font-size: 12.5px; color: var(--ink-soft); white-space: nowrap; }
+  .counts .mono { color: var(--navy); font-weight: 500; }
+  .counts .flag-count { color: var(--amber); font-weight: 500; }
+
+  .edit-hint { margin: 10px 0 14px; font-size: 12.5px; color: var(--teal); background: #EEF6F5; border: 1px solid #CFE3E1; border-radius: var(--radius); padding: 7px 10px; }
+
+  [contenteditable="true"] { cursor: text; border-radius: 2px; }
+  body.edit-mode [contenteditable="true"] { outline: 1px dashed #9FB6C4; outline-offset: 3px; background: #FBFCFD; }
+  body.edit-mode [contenteditable="true"]:hover { outline-color: var(--teal); }
+  body.edit-mode [contenteditable="true"]:focus { outline: 1.5px solid var(--teal); background: #fff; }
+
+  .section-block { margin-top: 30px; }
+  .section-block:first-of-type { margin-top: 18px; }
+  .section-heading-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; margin-bottom: 10px; border-bottom: 1px solid var(--line); }
+  .section-heading { font-size: 12.5px; font-weight: 600; color: var(--navy); text-transform: uppercase; letter-spacing: 0.06em; }
+  .section-remove { font-size: 11.5px; color: var(--danger); background: none; border: none; cursor: pointer; opacity: 0.7; }
+  .section-remove:hover { opacity: 1; text-decoration: underline; }
+  .add-field-row { margin-top: 8px; }
+  .page-add-section { margin-top: 30px; }
+
+  details.field { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--navy); border-radius: var(--radius); margin-bottom: 8px; overflow: hidden; }
+  details.field[data-flagged="true"] { border-left-color: var(--amber); }
+  details.field[data-grid="true"] { border-left-color: var(--teal); }
+  details.field[data-grid="true"][data-flagged="true"] { border-left-color: var(--amber); }
+  summary.field-summary { list-style: none; cursor: pointer; padding: 13px 16px; display: flex; align-items: center; gap: 12px; justify-content: space-between; }
+  summary.field-summary::-webkit-details-marker { display: none; }
+  .summary-left { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+  .field-name { font-weight: 600; font-size: 15px; color: var(--ink); white-space: nowrap; }
+  .field-type-tag { font-size: 11.5px; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .summary-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .flag-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); display: inline-block; }
+  .field-remove { font-size: 15px; line-height: 1; color: var(--ink-soft); background: none; border: none; cursor: pointer; padding: 0 2px; }
+  .field-remove:hover { color: var(--danger); }
+  .chevron { width: 9px; height: 9px; border-right: 1.5px solid var(--ink-soft); border-bottom: 1.5px solid var(--ink-soft); transform: rotate(-45deg); transition: transform 0.15s ease; margin-right: 2px; }
+  details[open] .chevron { transform: rotate(45deg); }
+  .field-body { padding: 4px 16px 16px; border-top: 1px solid var(--line-soft); }
+  .spec-row { display: grid; grid-template-columns: 160px 1fr; gap: 4px 16px; padding: 10px 0; border-bottom: 1px solid var(--line-soft); }
+  .spec-row:last-of-type { border-bottom: none; }
+  .spec-label { font-size: 11.5px; color: var(--teal); padding-top: 1px; }
+  .spec-value { font-size: 13.5px; color: var(--ink); }
+  .spec-value:empty::before { content: '—'; color: #A8B3BC; }
+  .flag-note { margin-top: 10px; padding: 10px 12px; background: var(--amber-bg); border-left: 3px solid var(--amber); border-radius: var(--radius); font-size: 13px; color: #6B4423; }
+  .flag-note strong { color: var(--amber); }
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--ink-soft); font-size: 14px; }
+
+  .grid-col-count { font-size: 11.5px; color: var(--ink-soft); white-space: nowrap; }
+  .grid-preview-wrap { overflow-x: auto; margin: 6px 0 18px; border: 1px solid var(--line-soft); border-radius: var(--radius); }
+  table.grid-preview { border-collapse: collapse; width: 100%; min-width: 420px; }
+  table.grid-preview th, table.grid-preview td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line-soft); white-space: nowrap; }
+  table.grid-preview th { background: #F5F8F8; font-size: 12.5px; font-weight: 600; color: var(--teal); border-bottom: 1px solid var(--line); }
+  table.grid-preview td { font-size: 13.5px; color: var(--ink-soft); }
+  table.grid-preview tbody tr:last-child td { border-bottom: none; }
+  .grid-sample-note { font-size: 11.5px; color: var(--ink-soft); font-style: italic; margin: -10px 0 18px; }
+  .grid-columns-label { font-size: 12px; font-weight: 600; color: var(--ink-soft); margin: 4px 0 8px; }
+  details.subfield { border: 1px solid var(--line-soft); border-left: 2px solid var(--line); border-radius: var(--radius); margin-bottom: 6px; background: #FCFDFD; }
+  details.subfield[data-flagged="true"] { border-left-color: var(--amber); }
+  summary.subfield-summary { list-style: none; cursor: pointer; padding: 9px 12px; display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+  summary.subfield-summary::-webkit-details-marker { display: none; }
+  .subfield-summary .field-name { font-size: 13.5px; }
+  .subfield-summary .chevron { width: 7px; height: 7px; }
+  .subfield-body { padding: 2px 14px 12px; border-top: 1px solid var(--line-soft); }
+  .subfield-body .spec-row { grid-template-columns: 140px 1fr; padding: 8px 0; }
+
+  footer.notes { max-width: 900px; margin: 20px auto 40px; padding: 0 24px; font-size: 12.5px; color: var(--ink-soft); border-top: 1px solid var(--line); padding-top: 14px; }
+  footer.notes p { margin: 0 0 8px; }
+
+  @media (max-width: 560px) {
+    .spec-row { grid-template-columns: 1fr; }
+    .field-type-tag { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-crumb" id="topCrumb"></div>
+  <button id="signOutLink" hidden>Sign out</button>
+</header>
+
+<div class="body-row">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main class="content" id="content"></main>
+</div>
+
+<script>
+(async function() {
+  const SEED_APP = {"sensors": [{"id": "sensor-garmin", "name": "Garmin", "forms": [{"id": "form-garmin-sleep", "name": "Garmin Sleep Summary", "subtitle": "AMS Event Form data dictionary", "sourceNote": "Teamworks AMS Form Builder screenshots plus one sample PDF export (Garmin Sleep Summary, single athlete record).", "fields": [{"id": "field-1", "section": "New Section", "name": "Summary Id", "instructions": "Single-line text box, no visible mask. Populated automatically when a Garmin sleep record syncs into AMS.", "type": "Text (System-Generated Identifier)", "definition": "Unique identifier for this sleep summary record. Sample value observed: 45f5f40f-56fd-4ab5-9ac0-bfed02d002df_1788307200, which is a GUID followed by what appears to be a Unix epoch timestamp (calendar date suffix).", "units": "N/A (alphanumeric string)", "calc": "Not certain how this is generated \u2014 most likely produced by the Garmin Connect/Health API and passed through unchanged on sync. Recommend verifying the exact concatenation logic with whoever configured the Garmin-to-AMS integration.", "visibility": "Likely Admin/Backend only \u2014 not a field a coach or athlete would need to see or edit. Not confirmed in the screenshots provided.", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": true, "flagNote": "Exact ID-generation logic and system visibility rules are inferred, not confirmed. Verify with the AMS/Garmin integration owner.", "gridId": null, "gridColIndex": null}, {"id": "field-2", "section": "New Section", "name": "Validation", "instructions": "Single-line text box.", "type": "Text / Enumerated (Status Code)", "definition": "Indicates how Garmin validated the sleep record \u2014 i.e., how confident Garmin's algorithm is that the recorded sleep data is accurate and final (versus a provisional/in-progress estimate).", "units": "N/A (categorical code)", "calc": "Not applicable \u2014 passed through directly from the Garmin API.", "visibility": "Recommend Coach/Admin visibility; not typically meaningful to an athlete.", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": true, "flagNote": "I am not certain of the complete list of possible Validation values. Only ENHANCED_FINAL is confirmed by the sample export. Based on general familiarity with Garmin Connect/Health API conventions (not verified against current Garmin documentation), other possible values may include MANUAL, OFF_WRIST, AUTOMATIC, ENHANCED, and ENHANCED_TENTATIVE \u2014 please verify this list against Garmin's current API reference before treating it as authoritative.", "gridId": null, "gridColIndex": null}, {"id": "field-3", "section": "New Section", "name": "Duration", "instructions": "Masked time input, format hh:mm:ss (shown in builder as a placeholder hint below the field).", "type": "Time Duration (hh:mm:ss)", "definition": "Total recorded sleep duration for the night, from sleep onset to final wake time (may or may not include awake interruptions \u2014 see Calculation/Logic).", "units": "Hours:Minutes:Seconds", "calc": "Not certain whether this includes or excludes intra-sleep awake periods. Sample record shows Duration = 7:30:00 while Deep + Light + REM + Awake + Unmeasurable sums to approximately the same total, suggesting Duration is likely the sum of all sleep-stage segments. Recommend confirming the exact formula with the data source.", "visibility": "Coach/Athlete \u2014 likely a primary reporting metric for both.", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": false, "flagNote": "", "gridId": null, "gridColIndex": null}, {"id": "field-4", "section": "New Section", "name": "Unmeasurable Sleep", "instructions": "Masked time input, format hh:mm:ss.", "type": "Time Duration (hh:mm:ss)", "definition": "Portion of the recorded sleep window that the device could not classify into a specific sleep stage (deep/light/REM/awake), typically due to motion artifacts or the device being removed.", "units": "Hours:Minutes:Seconds", "calc": "Not applicable \u2014 passed through from Garmin.", "visibility": "Coach/Admin \u2014 useful for assessing data quality/reliability of the night's reading.", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": false, "flagNote": "", "gridId": null, "gridColIndex": null}, {"id": "field-5", "section": "New Section", "name": "Deep Sleep Duration", "instructions": "Masked time input, format hh:mm:ss.", "type": "Time Duration (hh:mm:ss)", "definition": "Total time spent in deep (slow-wave) sleep during the recorded period.", "units": "Hours:Minutes:Seconds", "calc": "Sum of all individual deep-sleep segment durations listed in the Sleep Levels grid.", "visibility": "Coach & Athlete \u2014 commonly used recovery/readiness indicator.", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": false, "flagNote": "", "gridId": null, "gridColIndex": null}, {"id": "field-6", "section": "New Section", "name": "Light Sleep Duration", "instructions": "Masked time input, format hh:mm:ss.", "type": "Time Duration (hh:mm:ss)", "definition": "Total time spent in light sleep during the recorded period.", "units": "Hours:Minutes:Seconds", "calc": "Sum of all individual light-sleep segment durations listed in the Sleep Levels grid.", "visibility": "Coach & Athlete", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": false, "flagNote": "", "gridId": null, "gridColIndex": null}, {"id": "field-7", "section": "New Section", "name": "REM Sleep Duration", "instructions": "Masked time input, format hh:mm:ss.", "type": "Time Duration (hh:mm:ss)", "definition": "Total time spent in REM (rapid eye movement) sleep during the recorded period.", "units": "Hours:Minutes:Seconds", "calc": "Sum of all individual REM segment durations listed in the Sleep Levels grid.", "visibility": "Coach & Athlete", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": false, "flagNote": "", "gridId": null, "gridColIndex": null}, {"id": "field-8", "section": "New Section", "name": "Awake Duration", "instructions": "Masked time input, format hh:mm:ss.", "type": "Time Duration (hh:mm:ss)", "definition": "Total time spent awake within the recorded sleep window (i.e., interruptions after sleep onset, not time before falling asleep).", "units": "Hours:Minutes:Seconds", "calc": "Sum of all individual awake segment durations listed in the Sleep Levels grid.", "visibility": "Coach & Athlete", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": false, "flagNote": "", "gridId": null, "gridColIndex": null}, {"id": "field-9", "section": "New Section", "name": "Sleep ms", "instructions": "Label present in the Form Builder with no visible input box in the screenshot provided.", "type": "Not confirmed \u2014 likely Numeric (Integer)", "definition": "Presumed to be total sleep duration expressed in milliseconds, mirroring the Duration field in a machine-readable numeric unit rather than hh:mm:ss text.", "units": "Milliseconds (presumed)", "calc": "Presumed: Duration converted to milliseconds. Not confirmed.", "visibility": "Not confirmed \u2014 no input control was visible in the builder screenshot, so this may be a hidden/backend/calculated field rather than a user- or coach-facing one.", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": true, "flagNote": "No input box appeared next to this label in the builder screenshot. This may be a calculated/system-only field, a field hidden by conditional logic, or a rendering artifact of the screenshot. Please verify directly in the AMS Form Builder.", "gridId": null, "gridColIndex": null}, {"id": "field-10", "section": "New Section", "name": "Sleep hrs", "instructions": "Label present in the Form Builder with no visible input box in the screenshot provided.", "type": "Not confirmed \u2014 likely Numeric (Decimal)", "definition": "Presumed to be total sleep duration expressed as a decimal number of hours (e.g., 7.5), mirroring the Duration field in a reporting-friendly numeric format.", "units": "Hours, decimal (presumed)", "calc": "Presumed: Duration converted to decimal hours. Not confirmed.", "visibility": "Not confirmed \u2014 see note.", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": true, "flagNote": "Same caveat as Sleep ms \u2014 no input box was visible in the builder screenshot. Verify directly in AMS.", "gridId": null, "gridColIndex": null}, {"id": "field-11", "section": "Sleep Levels (repeating grid)", "name": "Sleep Level", "instructions": "Grid column, one row per sleep-stage segment. '+ Add Row' button suggests rows can also be added/edited manually.", "type": "Text / Enumerated", "definition": "Identifies which sleep stage a given time segment belongs to.", "units": "N/A (categorical)", "calc": "N/A", "visibility": "Coach & Athlete (detailed view)", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": false, "flagNote": "", "gridId": "grid-sleep-levels", "gridColIndex": 0}, {"id": "field-12", "section": "Sleep Levels (repeating grid)", "name": "Start", "instructions": "Grid column, time value per row.", "type": "Time (format unconfirmed)", "definition": "Start time of the sleep-stage segment.", "units": "Time", "calc": "N/A", "visibility": "Coach & Athlete (detailed view)", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": true, "flagNote": "The sample PDF shows negative and irregular values for Start/End (e.g., -1:-2:00, 0:-13:00). This looks like a formatting/mapping issue \u2014 possibly a millisecond time-offset value being mis-rendered as hh:mm:ss rather than a genuine clock time \u2014 but I cannot confirm the root cause from the files provided. Recommend checking the raw Garmin API payload and the AMS field mapping/format mask before relying on this field for reporting.", "gridId": "grid-sleep-levels", "gridColIndex": 1}, {"id": "field-13", "section": "Sleep Levels (repeating grid)", "name": "End", "instructions": "Grid column, time value per row.", "type": "Time (format unconfirmed)", "definition": "End time of the sleep-stage segment.", "units": "Time", "calc": "N/A", "visibility": "Coach & Athlete (detailed view)", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": true, "flagNote": "Same formatting concern as the Start field above.", "gridId": "grid-sleep-levels", "gridColIndex": 2}, {"id": "field-14", "section": "Sleep Levels (repeating grid)", "name": "Sleep Level Duration", "instructions": "Grid column, time value per row.", "type": "Time Duration (hh:mm:ss)", "definition": "Length of the individual sleep-stage segment.", "units": "Hours:Minutes:Seconds", "calc": "End minus Start (presumed, given the Start/End formatting issue noted above, this may not be a simple subtraction in the underlying data).", "visibility": "Coach & Athlete (detailed view)", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": false, "flagNote": "", "gridId": "grid-sleep-levels", "gridColIndex": 3}, {"id": "field-15", "section": "Sleep SpO2 Samples (repeating grid)", "name": "Time of Reading", "instructions": "Grid column, one row per SpO2 sample. '+ Add Row' button present.", "type": "Time", "definition": "Timestamp at which a given blood-oxygen saturation (SpO2) sample was recorded.", "units": "Time", "calc": "N/A", "visibility": "Coach/Admin \u2014 clinical/physiological detail, likely not needed at athlete level.", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": false, "flagNote": "", "gridId": "grid-spo2", "gridColIndex": 0}, {"id": "field-16", "section": "Sleep SpO2 Samples (repeating grid)", "name": "SpO2 Reading", "instructions": "Grid column, numeric value per row.", "type": "Numeric (Integer, Percentage)", "definition": "Blood-oxygen saturation percentage recorded by the device at the corresponding Time of Reading.", "units": "Percent (%)", "calc": "N/A", "visibility": "Coach/Admin", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": false, "flagNote": "", "gridId": "grid-spo2", "gridColIndex": 1}, {"id": "field-17", "section": "Testing", "name": "Sleep Score", "instructions": "Single-line text/number box, standalone under a section literally labeled 'Testing'.", "type": "Not confirmed \u2014 Numeric or Text", "definition": "Purpose unclear. Appears separate from 'Overall Sleep Score' and 'Overall Sleep Score Value' in the Sleep Score section below, despite a very similar name.", "units": "Unknown", "calc": "Unknown", "visibility": "Unknown", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": true, "flagNote": "This field sits under a section literally named 'Testing,' which suggests it may be a placeholder, QA/test artifact, or a field still being validated by whoever built the form \u2014 rather than a field intended for production use. I did not fill in a guessed Definition/Purpose here because I don't have a verified basis for one. Recommend confirming directly with the form's builder/owner whether this field is still in use.", "gridId": null, "gridColIndex": null}, {"id": "field-18", "section": "Sleep Score", "name": "Overall Sleep Score", "instructions": "Single-line text box.", "type": "Text / Enumerated (Rating)", "definition": "Categorical, plain-language quality rating for the night's overall sleep, derived by Garmin's scoring algorithm from the numeric Overall Sleep Score Value.", "units": "N/A (categorical)", "calc": "Not certain \u2014 presumed to be a tiered mapping of Overall Sleep Score Value ranges to a label (e.g., GOOD corresponds to 89 in the sample). Exact thresholds are not confirmed.", "visibility": "Coach & Athlete \u2014 likely the primary at-a-glance readiness/recovery indicator.", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": true, "flagNote": "Only the value GOOD is confirmed by the sample data. Other tiers likely exist (e.g., EXCELLENT, FAIR, POOR, based on the same labels seen in the Score Item table below) but this is inferred, not confirmed \u2014 verify the complete rating scale with Garmin's documentation or AMS's integration notes.", "gridId": null, "gridColIndex": null}, {"id": "field-19", "section": "Sleep Score", "name": "Overall Sleep Score Value", "instructions": "Single-line text/number box.", "type": "Numeric (Integer)", "definition": "Composite numeric sleep-quality score for the night, on what appears to be a 0\u2013100 scale.", "units": "Score points (presumed 0\u2013100 scale; range not explicitly confirmed)", "calc": "Not certain \u2014 presumed to be a weighted composite of the individual Score Item ratings below (totalDuration, stress, awakeCount, remPercentage, restlessness, lightPercentage, deepPercentage), consistent with Garmin's general sleep-scoring approach. Exact weighting formula is not confirmed.", "visibility": "Coach & Athlete", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": false, "flagNote": "", "gridId": null, "gridColIndex": null}, {"id": "field-20", "section": "Sleep Score", "name": "Score Item", "instructions": "Grid column, one row per scoring sub-metric.", "type": "Text / Enumerated", "definition": "Name of the individual sleep sub-metric being scored.", "units": "N/A (categorical)", "calc": "N/A", "visibility": "Coach/Admin \u2014 more granular detail than most athletes need day-to-day.", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": true, "flagNote": "The seven items listed are the ones observed in this single sample export. Treat this as the observed set, not necessarily an exhaustive list of every possible Score Item \u2014 additional sub-metrics may exist in other records.", "gridId": "grid-score-breakdown", "gridColIndex": 0}, {"id": "field-21", "section": "Sleep Score", "name": "Score", "instructions": "Grid column, one rating per row.", "type": "Text / Enumerated (Rating)", "definition": "Qualitative rating for the corresponding Score Item.", "units": "N/A (categorical)", "calc": "N/A", "visibility": "Coach/Admin", "changelog": "v1.0 \u2014 [date] \u2014 Initial documentation from Form Builder export.", "flagged": true, "flagNote": "EXCELLENT, GOOD, and FAIR are all confirmed in the sample data. A fourth tier (e.g., POOR) is plausible by symmetry but not confirmed \u2014 verify the complete rating scale before building validation rules against it.", "gridId": "grid-score-breakdown", "gridColIndex": 1}], "grids": [{"id": "grid-sleep-levels", "label": "Sleep Levels", "section": "Sleep Levels (repeating grid)", "columnIds": ["field-11", "field-12", "field-13", "field-14"], "sample": ["deep", "1:11:00", "1:35:00", "0:24:00"], "sampleNote": ""}, {"id": "grid-spo2", "label": "Sleep SpO2 Samples", "section": "Sleep SpO2 Samples (repeating grid)", "columnIds": ["field-15", "field-16"], "sample": ["6:14 AM", "97"], "sampleNote": "Illustrative only \u2014 the sample export's SpO2 grid had no rows to reference."}, {"id": "grid-score-breakdown", "label": "Sleep Score", "section": "Sleep Score", "columnIds": ["field-20", "field-21"], "sample": ["deepPercentage", "FAIR"], "sampleNote": ""}], "sections": ["New Section", "Sleep Levels (repeating grid)", "Sleep SpO2 Samples (repeating grid)", "Testing", "Sleep Score"]}]}]};
+  const CSV_HEADERS = ["Sensor", "Form", "Section", "Table", "Field Name", "Field Instructions", "Field Type", "Definition / Purpose", "Units", "Calculation / Logic", "Visibility", "Version / Change Log", "Flagged (Yes/No)", "Flag Note", "Sample Value (for table columns)"];
+  const DATA_FILE = 'data.json';
+
+  // Change this to your team's passphrase. It lives in this file's own code
+  // and is visible to anyone who views the page source — it's a soft gate
+  // against accidental edits, not real security. See the note on the
+  // Directions page for more on this trade-off.
+  const TEAM_PASSPHRASE = 'siesta-team';
+
+  const PATH_KEY = location.pathname || location.href;
+  const STORAGE_KEY = 'dataDictionaryApp::' + PATH_KEY;
+  const SESSION_KEY = 'dataDictionaryAppTeamMode::' + PATH_KEY;
+
+  // Loading order:
+  // 1. This browser's own unsynced edits (localStorage) — so a signed-in
+  //    editor's in-progress work always wins over anything else.
+  // 2. data.json sitting next to this file on the server, if reachable —
+  //    this is the shared, published version everyone else sees.
+  // 3. The sample data baked into this file, as a last resort (e.g. when
+  //    opened directly as a local file, where browsers block fetching a
+  //    sibling file, or before a data.json has ever been published).
+  let loadedFrom = 'seed';
+  async function loadApp() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && Array.isArray(parsed.sensors)) { loadedFrom = 'local'; return parsed; }
+      }
+    } catch (e) { /* ignore corrupt storage */ }
+
+    try {
+      const res = await fetch(DATA_FILE, { cache: 'no-store' });
+      if (res.ok) {
+        const parsed = await res.json();
+        if (parsed && Array.isArray(parsed.sensors)) { loadedFrom = 'published'; return parsed; }
+      }
+    } catch (e) { /* fetch blocked (e.g. opened as a local file) or data.json not published yet */ }
+
+    loadedFrom = 'seed';
+    return JSON.parse(JSON.stringify(SEED_APP));
+  }
+
+  let APP = await loadApp();
+  let teamMode = false;
+  try { teamMode = sessionStorage.getItem(SESSION_KEY) === '1'; } catch (e) { /* ignore */ }
+  let editMode = false;
+  let view = { type: 'home' };
+  const collapsedSensors = new Set();
+  let saveTimer = null;
+  let focusFieldId = null;
+
+  function persist() {
+    loadedFrom = 'local';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(APP)); } catch (e) { /* storage full or unavailable */ }
+    }, 200);
+  }
+
+  function newId(prefix) {
+    return prefix + '-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 7);
+  }
+
+  // Small self-contained CSV reader/writer (RFC4180-ish: handles quoted
+  // fields, embedded commas/newlines, and "" as an escaped quote) so this
+  // app has no external dependencies — it works even fully offline or
+  // behind a firewall that blocks CDNs.
+  function parseCsvText(text) {
+    const rows = [];
+    let row = [], field = '', inQuotes = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (inQuotes) {
+        if (c === '"') {
+          if (text[i + 1] === '"') { field += '"'; i++; }
+          else inQuotes = false;
+        } else {
+          field += c;
+        }
+      } else if (c === '"') {
+        inQuotes = true;
+      } else if (c === ',') {
+        row.push(field); field = '';
+      } else if (c === '\r') {
+        // ignore; \n (below) ends the row
+      } else if (c === '\n') {
+        row.push(field); field = ''; rows.push(row); row = [];
+      } else {
+        field += c;
+      }
+    }
+    if (field.length > 0 || row.length > 0) { row.push(field); rows.push(row); }
+    return rows;
+  }
+
+  function csvRowsToObjects(rows) {
+    const nonEmpty = rows.filter(r => r.some(v => v !== ''));
+    if (!nonEmpty.length) return [];
+    const headers = nonEmpty[0];
+    return nonEmpty.slice(1).map(r => {
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = r[i] !== undefined ? r[i] : ''; });
+      return obj;
+    });
+  }
+
+  function unparseCsv(rows) {
+    return rows.map(row => row.map(field => {
+      const s = String(field == null ? '' : field);
+      return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    }).join(',')).join('\r\n');
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  const sidebarEl = document.getElementById('sidebar');
+  const contentEl = document.getElementById('content');
+  const topCrumbEl = document.getElementById('topCrumb');
+  const signOutLink = document.getElementById('signOutLink');
+
+  function findForm(formId) {
+    for (const sensor of APP.sensors) {
+      const form = sensor.forms.find(f => f.id === formId);
+      if (form) return { sensor, form };
+    }
+    return null;
+  }
+
+  function goHome() { view = { type: 'home' }; renderAll(); }
+  function goToForm(formId) { view = { type: 'form', formId }; renderAll(); }
+
+  function setTeamMode(on) {
+    teamMode = on;
+    try { sessionStorage.setItem(SESSION_KEY, on ? '1' : '0'); } catch (e) { /* ignore */ }
+    if (!on) editMode = false;
+    renderAll();
+  }
+
+  // ---------- Sidebar ----------
+  function renderSidebar() {
+    sidebarEl.innerHTML = '';
+
+    const home = document.createElement('div');
+    home.className = 'home-link' + (view.type === 'home' ? ' active' : '');
+    home.textContent = 'Directions';
+    home.addEventListener('click', goHome);
+    sidebarEl.appendChild(home);
+
+    APP.sensors.forEach(sensor => {
+      const group = document.createElement('div');
+      group.className = 'sensor-group' + (collapsedSensors.has(sensor.id) ? ' collapsed' : '');
+
+      const head = document.createElement('div');
+      head.className = 'sensor-head';
+      head.innerHTML = `
+        <span class="sensor-head-left">
+          <span class="sensor-chevron"></span>
+          <span class="sensor-name">${escapeHtml(sensor.name)}</span>
+        </span>
+        <span class="sensor-actions">
+          ${teamMode ? `<button class="icon-btn" data-rename-sensor="${sensor.id}" title="Rename sensor">✎</button>
+                         <button class="icon-btn danger" data-remove-sensor="${sensor.id}" title="Delete sensor">×</button>` : ''}
+        </span>
+      `;
+      head.addEventListener('click', (e) => {
+        if (e.target.closest('.icon-btn')) return;
+        if (collapsedSensors.has(sensor.id)) collapsedSensors.delete(sensor.id);
+        else collapsedSensors.add(sensor.id);
+        renderSidebar();
+      });
+      group.appendChild(head);
+
+      const list = document.createElement('ul');
+      list.className = 'form-list';
+      sensor.forms.forEach(form => {
+        const li = document.createElement('li');
+        li.className = 'form-item' + (view.type === 'form' && view.formId === form.id ? ' active' : '');
+        li.innerHTML = `
+          <span class="form-item-name">${escapeHtml(form.name)}</span>
+          ${teamMode ? `<span class="sensor-actions">
+                           <button class="icon-btn" data-rename-form="${form.id}" title="Rename form">✎</button>
+                           <button class="icon-btn danger" data-remove-form="${form.id}" title="Remove form">×</button>
+                         </span>` : ''}
+        `;
+        li.addEventListener('click', (e) => {
+          if (e.target.closest('.icon-btn')) return;
+          goToForm(form.id);
+        });
+        list.appendChild(li);
+      });
+      group.appendChild(list);
+
+      if (teamMode) {
+        const addFormBtn = document.createElement('button');
+        addFormBtn.className = 'add-inline';
+        addFormBtn.textContent = '+ Add blank form to ' + sensor.name;
+        addFormBtn.style.marginLeft = '18px';
+        addFormBtn.style.width = 'calc(100% - 18px)';
+        addFormBtn.addEventListener('click', () => addBlankForm(sensor.id));
+        group.appendChild(addFormBtn);
+      }
+
+      sidebarEl.appendChild(group);
+    });
+
+    if (teamMode) {
+      const addSensorBtn = document.createElement('button');
+      addSensorBtn.className = 'add-inline';
+      addSensorBtn.textContent = '+ Add sensor';
+      addSensorBtn.addEventListener('click', addSensor);
+      sidebarEl.appendChild(addSensorBtn);
+    }
+  }
+
+  sidebarEl.addEventListener('click', (e) => {
+    const renameSensorBtn = e.target.closest('[data-rename-sensor]');
+    if (renameSensorBtn) {
+      const sensor = APP.sensors.find(s => s.id === renameSensorBtn.dataset.renameSensor);
+      const name = prompt('Rename sensor:', sensor.name);
+      if (name) { sensor.name = name; persist(); renderSidebar(); }
+      return;
+    }
+    const removeSensorBtn = e.target.closest('[data-remove-sensor]');
+    if (removeSensorBtn) {
+      const sensor = APP.sensors.find(s => s.id === removeSensorBtn.dataset.removeSensor);
+      if (confirm(`Remove "${sensor.name}" and all ${sensor.forms.length} form(s) under it? This can't be undone.`)) {
+        if (view.type === 'form' && sensor.forms.some(f => f.id === view.formId)) view = { type: 'home' };
+        APP.sensors = APP.sensors.filter(s => s.id !== sensor.id);
+        persist();
+        renderAll();
+      }
+      return;
+    }
+    const renameFormBtn = e.target.closest('[data-rename-form]');
+    if (renameFormBtn) {
+      const found = findForm(renameFormBtn.dataset.renameForm);
+      if (found) {
+        const name = prompt('Rename form:', found.form.name);
+        if (name) { found.form.name = name; persist(); renderSidebar(); }
+      }
+      return;
+    }
+    const removeFormBtn = e.target.closest('[data-remove-form]');
+    if (removeFormBtn) {
+      const found = findForm(removeFormBtn.dataset.removeForm);
+      if (found && confirm(`Remove "${found.form.name}"? This can't be undone.`)) {
+        found.sensor.forms = found.sensor.forms.filter(f => f.id !== found.form.id);
+        if (view.type === 'form' && view.formId === found.form.id) view = { type: 'home' };
+        persist();
+        renderAll();
+      }
+    }
+  });
+
+  function addSensor() {
+    const name = prompt('New sensor name (e.g. Garmin, Whoop, Oura):');
+    if (!name) return;
+    APP.sensors.push({ id: newId('sensor'), name, forms: [] });
+    persist();
+    renderSidebar();
+  }
+
+  function addBlankForm(sensorId) {
+    const sensor = APP.sensors.find(s => s.id === sensorId);
+    const name = prompt('New form name (e.g. "Garmin Heart Rate Summary"):');
+    if (!name) return;
+    const fieldId = newId('field');
+    sensor.forms.push({
+      id: newId('form'), name, subtitle: 'Data dictionary', sourceNote: 'Describe where this data comes from.',
+      fields: [{
+        id: fieldId, section: 'New Section', name: 'Example field', instructions: '', type: '',
+        definition: '', units: '', calc: '', visibility: '', changelog: '', flagged: false, flagNote: '',
+        gridId: null, gridColIndex: null,
+      }],
+      grids: [],
+      sections: ['New Section'],
+    });
+    persist();
+    goToForm(sensor.forms[sensor.forms.length - 1].id);
+  }
+
+  // ---------- Top bar ----------
+  function renderTopBar() {
+    if (view.type === 'home') {
+      topCrumbEl.innerHTML = `<strong>Data Dictionary</strong>`;
+    } else {
+      const found = findForm(view.formId);
+      if (found) {
+        topCrumbEl.innerHTML = `<a data-go-home="1">Directions</a> / ${escapeHtml(found.sensor.name)} / <strong>${escapeHtml(found.form.name)}</strong>`;
+      } else {
+        topCrumbEl.innerHTML = `<strong>Data Dictionary</strong>`;
+      }
+    }
+    signOutLink.hidden = !teamMode;
+  }
+  topCrumbEl.addEventListener('click', (e) => {
+    if (e.target.closest('[data-go-home]')) goHome();
+  });
+  signOutLink.addEventListener('click', () => setTeamMode(false));
+
+  // ---------- Home / Directions page ----------
+  function renderHome() {
+    const totalForms = APP.sensors.reduce((n, s) => n + s.forms.length, 0);
+    const wrap = document.createElement('div');
+    wrap.className = 'page';
+    wrap.innerHTML = `
+      <div class="home-hero">
+        <h1>Data Dictionary</h1>
+        <p class="lead">Field-level documentation for every sensor form we ingest, organized by sensor and form in the sidebar. ${totalForms} form(s) documented so far.</p>
+      </div>
+
+      <div class="status-pill ${teamMode ? 'on' : ''}"><span class="status-dot"></span>${statusLine()}</div>
+
+      <div class="panel">
+        <h2>Team sign-in</h2>
+        <p>Sign in once here to enable editing across every form in this app for the rest of this browser session — you won't be asked again on individual form pages.</p>
+        <div class="btn-row">
+          ${teamMode
+            ? `<button class="action action-team" id="btnSignOut">Sign out</button>`
+            : `<button class="action action-team" id="btnSignIn">Team sign-in</button>`}
+          ${loadedFrom === 'local' ? `<button class="action" id="btnDiscardLocal" title="Clear this browser's unpublished edits and reload the published/sample version">Discard local edits &amp; reload</button>` : ''}
+        </div>
+      </div>
+
+      ${teamMode ? renderAdminPanelHtml() : ''}
+
+      <div class="panel">
+        <h2>How this works</h2>
+        <ol>
+          <li>Pick a sensor and form from the sidebar to view its data dictionary.</li>
+          <li>Search, filter by section, or show flagged-for-review fields only.</li>
+          <li>Signed-in team members can click into any field to edit it directly, and use "+ Add field" / "+ Add section" / "+ Add table" on a form page to build one out by hand.</li>
+          <li>For a new form with many fields at once, it's usually faster to fill in the CSV template above and upload it than to add fields one at a time.</li>
+        </ol>
+        <p><em>On access: the team sign-in above is a convenience gate to prevent accidental edits by casual viewers — the passphrase lives in this file's own code and is visible to anyone who views the page source, so don't rely on it to protect sensitive data from a determined person. Real access control would need this hosted behind an actual login system.</em></p>
+      </div>
+    `;
+    contentEl.appendChild(wrap);
+
+    const signInBtn = document.getElementById('btnSignIn');
+    if (signInBtn) signInBtn.addEventListener('click', () => {
+      const attempt = prompt('Enter your team passphrase to enable editing:');
+      if (attempt === null) return;
+      if (attempt === TEAM_PASSPHRASE) setTeamMode(true);
+      else alert('That passphrase did not match. Ask a teammate for the current one.');
+    });
+    const signOutBtn = document.getElementById('btnSignOut');
+    if (signOutBtn) signOutBtn.addEventListener('click', () => setTeamMode(false));
+    const discardBtn = document.getElementById('btnDiscardLocal');
+    if (discardBtn) discardBtn.addEventListener('click', () => {
+      if (!confirm("Discard this browser's unpublished edits and reload the published (or sample) version instead?")) return;
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
+      location.reload();
+    });
+
+    if (teamMode) wireAdminPanel();
+  }
+
+  function statusLine() {
+    if (teamMode) return 'Signed in — editing enabled everywhere in this app';
+    if (loadedFrom === 'local') return "Viewing mode — showing this browser's unpublished edits";
+    if (loadedFrom === 'published') return 'Viewing mode — showing the published data.json';
+    return 'Viewing mode — showing the built-in sample data (no data.json published yet)';
+  }
+
+  function renderAdminPanelHtml() {
+    return `
+      <div class="panel">
+        <h2>Add a new form</h2>
+        <p><strong>Option A — bulk upload (recommended for a form with many fields):</strong> download the CSV template, fill in one row per field in Excel or Sheets (group rows into a table by giving them the same "Table" name), then upload it here. This creates or updates the sensor and form automatically.</p>
+        <div class="btn-row">
+          <button class="action" id="btnDownloadTemplate">Download CSV template</button>
+          <button class="action action-team" id="btnUploadCsv">Upload filled-in CSV</button>
+          <input type="file" id="csvUploadInput" accept=".csv,text/csv">
+        </div>
+        <p style="margin-top:14px;"><strong>Option B — start blank:</strong> add an empty form under a sensor in the sidebar ("+ Add blank form to …"), then build it out field by field, or add a table, right on that form's page.</p>
+      </div>
+
+      <div class="panel">
+        <h2>Publish your changes</h2>
+        <p>Everything you do here — editing, CSV uploads, adding sensors — only changes what's stored in <em>this browser</em>. Nobody else sees it until you publish it.</p>
+        <p>If this app is hosted on a web server (not opened as a local file), it automatically loads a file named <span class="mono">data.json</span> sitting next to it, so regular viewers always see the latest published version without doing anything. To publish a change:</p>
+        <ol>
+          <li>Click "Export all data" below — it downloads a file named <span class="mono">data.json</span>.</li>
+          <li>Upload that file to your server, in the same folder as this HTML file, overwriting the old <span class="mono">data.json</span>.</li>
+          <li>That's it — this HTML file itself never needs to be re-uploaded again after the first time you deploy it.</li>
+        </ol>
+        <div class="btn-row">
+          <button class="action" id="btnExportAll">Export all data (data.json)</button>
+          <button class="action" id="btnImportAll" title="Load a data.json (or export) from somewhere other than the server, e.g. one a teammate sent you">Import a data file</button>
+          <input type="file" id="jsonImportInput" accept="application/json">
+        </div>
+      </div>
+    `;
+  }
+
+  function wireAdminPanel() {
+    document.getElementById('btnDownloadTemplate').addEventListener('click', downloadCsvTemplate);
+    document.getElementById('btnUploadCsv').addEventListener('click', () => document.getElementById('csvUploadInput').click());
+    document.getElementById('csvUploadInput').addEventListener('change', handleCsvUpload);
+    document.getElementById('btnExportAll').addEventListener('click', exportAllData);
+    document.getElementById('btnImportAll').addEventListener('click', () => document.getElementById('jsonImportInput').click());
+    document.getElementById('jsonImportInput').addEventListener('change', handleJsonImport);
+  }
+
+  function downloadCsvTemplate() {
+    const rows = [
+      CSV_HEADERS,
+      ['Whoop', 'Whoop Recovery Summary', 'New Section', '', 'Recovery Score', 'Single-line number box', 'Numeric (0-100)', 'Overall recovery score for the day', '%', 'N/A', 'Coach & Athlete', 'v1.0 — [date] — Initial documentation.', 'No', '', ''],
+      ['Whoop', 'Whoop Recovery Summary', 'HRV Samples', 'HRV Reading', 'Time of Reading', 'Grid column, one row per sample', 'Time', 'Timestamp of the HRV sample', 'Time', 'N/A', 'Coach/Admin', 'v1.0 — [date] — Initial documentation.', 'No', '', '6:14 AM'],
+      ['Whoop', 'Whoop Recovery Summary', 'HRV Samples', 'HRV Reading', 'HRV (ms)', 'Grid column, numeric value per row', 'Numeric', 'Heart rate variability reading in milliseconds', 'ms', 'N/A', 'Coach/Admin', 'v1.0 — [date] — Initial documentation.', 'No', '', '62'],
+    ];
+    const csv = unparseCsv(rows);
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'data-dictionary-upload-template.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function groupCsvRowsIntoForm(rows) {
+    const sections = [];
+    const fields = [];
+    const gridsByKey = new Map();
+
+    rows.forEach(row => {
+      const sectionName = (row['Section'] || 'New Section').trim();
+      if (!sections.includes(sectionName)) sections.push(sectionName);
+
+      const tableName = (row['Table'] || '').trim();
+      const id = newId('field');
+      const field = {
+        id,
+        section: sectionName,
+        name: (row['Field Name'] || 'Untitled field').trim(),
+        instructions: row['Field Instructions'] || '',
+        type: row['Field Type'] || '',
+        definition: row['Definition / Purpose'] || '',
+        units: row['Units'] || '',
+        calc: row['Calculation / Logic'] || '',
+        visibility: row['Visibility'] || '',
+        changelog: row['Version / Change Log'] || '',
+        flagged: /^y/i.test((row['Flagged (Yes/No)'] || '').trim()),
+        flagNote: row['Flag Note'] || '',
+        gridId: null,
+        gridColIndex: null,
+      };
+
+      if (tableName) {
+        const gridKey = sectionName + '::' + tableName;
+        if (!gridsByKey.has(gridKey)) {
+          gridsByKey.set(gridKey, {
+            id: newId('grid'), label: tableName, section: sectionName,
+            columnIds: [], sample: [], sampleNote: '',
+          });
+        }
+        const grid = gridsByKey.get(gridKey);
+        field.gridId = grid.id;
+        field.gridColIndex = grid.columnIds.length;
+        grid.columnIds.push(id);
+        grid.sample.push(row['Sample Value (for table columns)'] || '');
+      }
+
+      fields.push(field);
+    });
+
+    return { fields, grids: [...gridsByKey.values()], sections };
+  }
+
+  function handleCsvUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const rows = parseCsvText(String(reader.result));
+        const objects = csvRowsToObjects(rows);
+        importCsvRows(objects);
+      } catch (err) {
+        alert('Could not read that file as a data-dictionary CSV: ' + err.message);
+      }
+    };
+    reader.onerror = () => alert('Could not read that file.');
+    reader.readAsText(file);
+    e.target.value = '';
+  }
+
+  function importCsvRows(rows) {
+    if (!rows.length) { alert('That file had no rows to import.'); return; }
+    const bySensorForm = new Map();
+    rows.forEach(row => {
+      const sensorName = (row['Sensor'] || '').trim();
+      const formName = (row['Form'] || '').trim();
+      if (!sensorName || !formName) return;
+      const key = sensorName + '::' + formName;
+      if (!bySensorForm.has(key)) bySensorForm.set(key, { sensorName, formName, rows: [] });
+      bySensorForm.get(key).rows.push(row);
+    });
+
+    if (bySensorForm.size === 0) {
+      alert('No rows had both a Sensor and a Form value — nothing to import.');
+      return;
+    }
+
+    let importedCount = 0;
+    bySensorForm.forEach(({ sensorName, formName, rows }) => {
+      let sensor = APP.sensors.find(s => s.name.toLowerCase() === sensorName.toLowerCase());
+      if (!sensor) {
+        sensor = { id: newId('sensor'), name: sensorName, forms: [] };
+        APP.sensors.push(sensor);
+      }
+      let form = sensor.forms.find(f => f.name.toLowerCase() === formName.toLowerCase());
+      const built = groupCsvRowsIntoForm(rows);
+      if (form) {
+        if (!confirm(`"${formName}" already exists under ${sensorName} with ${form.fields.length} field(s). Replace its contents with the ${built.fields.length} field(s) from this upload?`)) {
+          return;
+        }
+        form.fields = built.fields;
+        form.grids = built.grids;
+        form.sections = built.sections;
+      } else {
+        form = {
+          id: newId('form'), name: formName, subtitle: 'Data dictionary',
+          sourceNote: 'Uploaded from a data-dictionary CSV.',
+          fields: built.fields, grids: built.grids, sections: built.sections,
+        };
+        sensor.forms.push(form);
+      }
+      importedCount++;
+    });
+
+    persist();
+    renderAll();
+    if (importedCount > 0) alert(`Imported ${importedCount} form(s) from that file.`);
+  }
+
+  function exportAllData() {
+    const blob = new Blob([JSON.stringify(APP, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = DATA_FILE;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function handleJsonImport(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result);
+        if (!parsed || !Array.isArray(parsed.sensors)) throw new Error('This file is not a data-dictionary export.');
+        if (confirm('Replace everything in this app with the imported file? This overwrites all sensors and forms currently shown.')) {
+          APP = parsed;
+          view = { type: 'home' };
+          persist();
+          renderAll();
+        }
+      } catch (err) {
+        alert('Could not import that file: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  }
+
+  // ---------- Form dashboard page ----------
+  function rerenderForm() { contentEl.innerHTML = ''; renderFormPage(); }
+
+  function renderFormPage() {
+    const found = findForm(view.formId);
+    if (!found) { goHome(); return; }
+    const form = found.form;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'page';
+
+    const total = form.fields.length;
+    const flaggedCount = form.fields.filter(f => f.flagged).length;
+
+    wrap.innerHTML = `
+      <div class="form-header">
+        <div>
+          <h1>${escapeHtml(form.name)}</h1>
+          <p class="subtitle">${escapeHtml(form.subtitle || '')}</p>
+        </div>
+        <div class="counts">
+          <span id="visibleCount" class="mono">${total}</span> of <span class="mono">${total}</span> fields ·
+          <span class="flag-count mono">${flaggedCount} flagged for review</span>
+        </div>
+      </div>
+      <div class="form-toolbar">
+        <input type="search" id="searchInput" placeholder="Search fields, definitions, types…" aria-label="Search fields">
+        <select id="sectionFilter" aria-label="Filter by section"><option value="">All sections</option></select>
+        <label class="toggle-flagged"><input type="checkbox" id="flaggedOnly"> Flagged only</label>
+        <button class="action" id="expandAll">Expand all</button>
+        <button class="action" id="collapseAll">Collapse all</button>
+      </div>
+      ${teamMode ? `
+      <div class="team-toolbar-row">
+        <button class="action" id="editModeToggle">${editMode ? 'Done editing' : 'Edit content'}</button>
+        <button class="action" id="exportFormCsv" title="Download this form's fields as CSV, e.g. for bulk editing in Excel">Export as CSV</button>
+        <button class="action action-danger" id="resetFormEdits" title="Discard local edits and restore this form to its last-imported state">Reset this form</button>
+      </div>
+      <p class="edit-hint" id="editHint" ${editMode ? '' : 'hidden'}>Editing on — click any field name or value to change it, or use "+ Add field" / "+ Add section" / "+ Add table" below.</p>
+      ` : ''}
+      <div id="fieldsArea"></div>
+      <footer class="notes">
+        <p><strong style="color: var(--ink);">Source:</strong> ${escapeHtml(form.sourceNote || '')}</p>
+        <p>Rows with an amber marker contain a field whose type, purpose, or valid values could not be fully confirmed from the source materials.</p>
+      </footer>
+    `;
+    contentEl.appendChild(wrap);
+
+    const searchInput = document.getElementById('searchInput');
+    const sectionFilter = document.getElementById('sectionFilter');
+    const flaggedOnly = document.getElementById('flaggedOnly');
+    const fieldsArea = document.getElementById('fieldsArea');
+    const visibleCountEl = document.getElementById('visibleCount');
+
+    form.sections.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s; opt.textContent = s;
+      sectionFilter.appendChild(opt);
+    });
+
+    function fieldMatches(field, query) {
+      if (!query) return true;
+      const haystack = (field.name + ' ' + field.definition + ' ' + field.type + ' ' + field.instructions).toLowerCase();
+      return haystack.includes(query);
+    }
+    function fieldById(id) { return form.fields.find(f => f.id === id); }
+
+    function renderFields() {
+      const query = searchInput.value.trim().toLowerCase();
+      const sectionVal = sectionFilter.value;
+      const onlyFlagged = flaggedOnly.checked;
+
+      const openState = {};
+      fieldsArea.querySelectorAll('[data-open-key]').forEach(d => { openState[d.dataset.openKey] = d.open; });
+
+      fieldsArea.innerHTML = '';
+      let visible = 0;
+      const editable = (teamMode && editMode) ? 'true' : 'false';
+
+      form.sections.forEach(sectionName => {
+        if (sectionVal && sectionVal !== sectionName) return;
+
+        const items = [];
+        form.fields.filter(f => f.section === sectionName).forEach(f => {
+          if (f.gridId) {
+            if (!items.find(it => it.type === 'grid' && it.gridId === f.gridId)) items.push({ type: 'grid', gridId: f.gridId });
+          } else {
+            items.push({ type: 'field', field: f });
+          }
+        });
+
+        const visibleItems = [];
+        items.forEach(item => {
+          if (item.type === 'field') {
+            const f = item.field;
+            if (onlyFlagged && !f.flagged) return;
+            if (!fieldMatches(f, query)) return;
+            visibleItems.push(item);
+          } else {
+            const grid = form.grids.find(g => g.id === item.gridId);
+            const cols = grid.columnIds.map(fieldById).filter(Boolean);
+            const gridMatchesQuery = cols.some(c => fieldMatches(c, query));
+            const gridMatchesFlag = !onlyFlagged || cols.some(c => c.flagged);
+            if (!gridMatchesQuery || !gridMatchesFlag) return;
+            visibleItems.push({ type: 'grid', grid, cols });
+          }
+        });
+
+        if (visibleItems.length === 0 && !(teamMode && editMode && !query && !sectionVal && !onlyFlagged)) return;
+
+        const block = document.createElement('div');
+        block.className = 'section-block';
+        const headRow = document.createElement('div');
+        headRow.className = 'section-heading-row';
+        headRow.innerHTML = `
+          <span class="section-heading">${escapeHtml(sectionName)}</span>
+          ${(teamMode && editMode) ? `<button class="section-remove" data-remove-section="${escapeHtml(sectionName)}">Remove section</button>` : ''}
+        `;
+        block.appendChild(headRow);
+
+        visibleItems.forEach(item => {
+          visible += item.type === 'field' ? 1 : item.cols.length;
+          if (item.type === 'field') block.appendChild(buildFieldCard(item.field, editable, openState));
+          else block.appendChild(buildGridCard(item.grid, item.cols, editable, openState));
+        });
+
+        if (teamMode && editMode) {
+          const addRow = document.createElement('div');
+          addRow.className = 'add-field-row';
+          addRow.innerHTML = `
+            <div style="display:flex; gap:8px;">
+              <button class="add-inline" data-add-field-to="${escapeHtml(sectionName)}">+ Add field to "${escapeHtml(sectionName)}"</button>
+              <button class="add-inline" data-add-table-to="${escapeHtml(sectionName)}">+ Add table to "${escapeHtml(sectionName)}"</button>
+            </div>
+          `;
+          block.appendChild(addRow);
+        }
+
+        fieldsArea.appendChild(block);
+      });
+
+      if (teamMode && editMode) {
+        const addSection = document.createElement('div');
+        addSection.className = 'page-add-section';
+        addSection.innerHTML = `<button class="add-inline" id="addSectionBtn">+ Add section</button>`;
+        fieldsArea.appendChild(addSection);
+      }
+
+      visibleCountEl.textContent = visible;
+      if (fieldsArea.children.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'empty-state';
+        empty.textContent = 'No fields match the current filters.';
+        fieldsArea.appendChild(empty);
+      }
+
+      if (focusFieldId) {
+        const el = fieldsArea.querySelector(`[data-role="name"][data-id="${focusFieldId}"]`);
+        if (el) {
+          const details = el.closest('details');
+          if (details) details.open = true;
+          el.focus();
+          const range = document.createRange();
+          range.selectNodeContents(el);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+        focusFieldId = null;
+      }
+    }
+
+    function fieldSpecRows(field, editable) {
+      return `
+        ${specRow('Field instructions', field.instructions, 'instructions', field.id, editable)}
+        ${specRow('Field type', field.type, 'type', field.id, editable, true)}
+        ${specRow('Definition / purpose', field.definition, 'definition', field.id, editable)}
+        ${specRow('Units', field.units, 'units', field.id, editable, true)}
+        ${specRow('Calculation / logic', field.calc, 'calc', field.id, editable)}
+        ${specRow('Visibility', field.visibility, 'visibility', field.id, editable)}
+        ${specRow('Version / change log', field.changelog, 'changelog', field.id, editable)}
+        ${field.flagged ? `<div class="flag-note"><strong>Flagged for review:</strong> <span data-role="spec" data-key="flagNote" data-id="${field.id}" contenteditable="${editable}">${escapeHtml(field.flagNote)}</span></div>` : ''}
+      `;
+    }
+    function specRow(label, value, key, fieldId, editable, mono) {
+      return `
+        <div class="spec-row">
+          <div class="spec-label">${label}</div>
+          <div class="spec-value ${mono ? 'mono' : ''}" data-role="spec" data-key="${key}" data-id="${fieldId}" contenteditable="${editable}">${escapeHtml(value)}</div>
+        </div>
+      `;
+    }
+    function buildFieldCard(field, editable, openState) {
+      const details = document.createElement('details');
+      details.className = 'field';
+      details.dataset.flagged = field.flagged ? 'true' : 'false';
+      details.dataset.openKey = field.id;
+      if (openState[field.id]) details.open = true;
+      details.innerHTML = `
+        <summary class="field-summary">
+          <div class="summary-left">
+            <span class="chevron"></span>
+            <span class="field-name" data-role="name" data-id="${field.id}" contenteditable="${editable}">${escapeHtml(field.name)}</span>
+          </div>
+          <div class="summary-right">
+            <span class="field-type-tag mono">${escapeHtml(field.type)}</span>
+            ${field.flagged ? '<span class="flag-dot" title="Flagged for review"></span>' : ''}
+            ${editable === 'true' ? `<button class="field-remove" data-remove-field="${field.id}" title="Delete this field">×</button>` : ''}
+          </div>
+        </summary>
+        <div class="field-body">${fieldSpecRows(field, editable)}</div>
+      `;
+      return details;
+    }
+    function buildGridCard(grid, cols, editable, openState) {
+      const details = document.createElement('details');
+      details.className = 'field';
+      details.dataset.grid = 'true';
+      details.dataset.flagged = cols.some(c => c.flagged) ? 'true' : 'false';
+      details.dataset.openKey = grid.id;
+      if (openState[grid.id]) details.open = true;
+      const headerCells = cols.map(c => `<th data-role="name" data-id="${c.id}" contenteditable="${editable}">${escapeHtml(c.name)}</th>`).join('');
+      const sampleCells = grid.sample.map((val, i) => `<td data-role="gridSample" data-grid-id="${grid.id}" data-col-index="${i}" contenteditable="${editable}">${escapeHtml(val)}</td>`).join('');
+      const subfields = cols.map(c => `
+        <details class="subfield" data-flagged="${c.flagged ? 'true' : 'false'}" data-open-key="${c.id}" ${openState[c.id] ? 'open' : ''}>
+          <summary class="subfield-summary">
+            <div class="summary-left"><span class="chevron"></span><span class="field-name">${escapeHtml(c.name)}</span></div>
+            <div class="summary-right">
+              <span class="field-type-tag mono">${escapeHtml(c.type)}</span>
+              ${c.flagged ? '<span class="flag-dot" title="Flagged for review"></span>' : ''}
+            </div>
+          </summary>
+          <div class="subfield-body">${fieldSpecRows(c, editable)}</div>
+        </details>
+      `).join('');
+      details.innerHTML = `
+        <summary class="field-summary">
+          <div class="summary-left">
+            <span class="chevron"></span>
+            <span class="field-name">${escapeHtml(grid.label)} <span class="grid-col-count">(table — ${cols.length} columns)</span></span>
+          </div>
+          <div class="summary-right">
+            ${cols.some(c => c.flagged) ? '<span class="flag-dot" title="Flagged for review"></span>' : ''}
+            ${editable === 'true' ? `<button class="field-remove" data-remove-grid="${grid.id}" title="Delete this table">×</button>` : ''}
+          </div>
+        </summary>
+        <div class="field-body">
+          <div class="grid-columns-label">How the columns line up</div>
+          <div class="grid-preview-wrap"><table class="grid-preview"><thead><tr>${headerCells}</tr></thead><tbody><tr>${sampleCells}</tr></tbody></table></div>
+          ${grid.sampleNote ? `<div class="grid-sample-note">${escapeHtml(grid.sampleNote)}</div>` : ''}
+          <div class="grid-columns-label">Column definitions</div>
+          ${subfields}
+        </div>
+      `;
+      return details;
+    }
+
+    searchInput.addEventListener('input', renderFields);
+    sectionFilter.addEventListener('change', renderFields);
+    flaggedOnly.addEventListener('change', renderFields);
+    document.getElementById('expandAll').addEventListener('click', () => {
+      fieldsArea.querySelectorAll('details').forEach(d => d.open = true);
+    });
+    document.getElementById('collapseAll').addEventListener('click', () => {
+      fieldsArea.querySelectorAll('details.field').forEach(d => d.open = false);
+    });
+
+    if (teamMode) {
+      document.getElementById('editModeToggle').addEventListener('click', () => {
+        editMode = !editMode;
+        document.body.classList.toggle('edit-mode', editMode);
+        rerenderForm();
+      });
+      document.getElementById('exportFormCsv').addEventListener('click', () => exportFormCsv(form));
+      document.getElementById('resetFormEdits').addEventListener('click', () => {
+        const seedFound = (function findInSeed() {
+          for (const s of SEED_APP.sensors) { const f = s.forms.find(x => x.id === form.id); if (f) return f; }
+          return null;
+        })();
+        if (!seedFound) { alert('This form has no original version to reset to (it was created in this app, not part of the original seed data).'); return; }
+        if (!confirm('Discard edits to this form and restore its original content?')) return;
+        Object.assign(form, JSON.parse(JSON.stringify(seedFound)));
+        persist();
+        rerenderForm();
+      });
+    }
+
+    fieldsArea.addEventListener('click', (e) => {
+      if (editMode && (e.target.closest('[data-role="name"]') || e.target.closest('[data-role="gridSample"]'))) {
+        e.preventDefault();
+      }
+      const removeFieldBtn = e.target.closest('[data-remove-field]');
+      if (removeFieldBtn) {
+        e.preventDefault();
+        const f = fieldById(removeFieldBtn.dataset.removeField);
+        if (f && confirm(`Delete the field "${f.name}"? This can't be undone.`)) {
+          form.fields = form.fields.filter(x => x.id !== f.id);
+          persist(); renderFields();
+        }
+        return;
+      }
+      const removeGridBtn = e.target.closest('[data-remove-grid]');
+      if (removeGridBtn) {
+        e.preventDefault();
+        const grid = form.grids.find(g => g.id === removeGridBtn.dataset.removeGrid);
+        if (grid && confirm(`Delete the table "${grid.label}" and all ${grid.columnIds.length} of its columns? This can't be undone.`)) {
+          form.fields = form.fields.filter(f => f.gridId !== grid.id);
+          form.grids = form.grids.filter(g => g.id !== grid.id);
+          persist(); renderFields();
+        }
+        return;
+      }
+      const addFieldBtn = e.target.closest('[data-add-field-to]');
+      if (addFieldBtn) {
+        const section = addFieldBtn.dataset.addFieldTo;
+        const id = newId('field');
+        form.fields.push({ id, section, name: 'New field', instructions: '', type: '', definition: '', units: '', calc: '', visibility: '', changelog: '', flagged: false, flagNote: '', gridId: null, gridColIndex: null });
+        focusFieldId = id;
+        persist(); renderFields();
+        return;
+      }
+      const addTableBtn = e.target.closest('[data-add-table-to]');
+      if (addTableBtn) {
+        const section = addTableBtn.dataset.addTableTo;
+        const label = prompt('Name this table (e.g. "HRV Samples"):');
+        if (!label) return;
+        const colsInput = prompt('Column names, separated by commas (e.g. "Time of Reading, HRV (ms)"):');
+        if (!colsInput) return;
+        const colNames = colsInput.split(',').map(s => s.trim()).filter(Boolean);
+        if (colNames.length < 2) { alert('A table needs at least 2 columns.'); return; }
+        const sampleInput = prompt('Optional: one example value per column, comma-separated, in the same order (for illustration only — leave blank to skip):', '');
+        const sampleVals = sampleInput ? sampleInput.split(',').map(s => s.trim()) : [];
+        const gridId = newId('grid');
+        const columnIds = [];
+        colNames.forEach((name, i) => {
+          const id = newId('field');
+          form.fields.push({ id, section, name, instructions: '', type: '', definition: '', units: '', calc: '', visibility: '', changelog: '', flagged: false, flagNote: '', gridId, gridColIndex: i });
+          columnIds.push(id);
+        });
+        form.grids.push({ id: gridId, label, section, columnIds, sample: colNames.map((_, i) => sampleVals[i] || ''), sampleNote: sampleVals.length ? '' : 'No example values provided yet.' });
+        persist(); renderFields();
+        return;
+      }
+      const removeSectionBtn = e.target.closest('[data-remove-section]');
+      if (removeSectionBtn) {
+        const name = removeSectionBtn.dataset.removeSection;
+        if (confirm(`Delete the section "${name}" and everything in it? This can't be undone.`)) {
+          const gridIdsInSection = new Set(form.fields.filter(f => f.section === name && f.gridId).map(f => f.gridId));
+          form.fields = form.fields.filter(f => f.section !== name);
+          form.grids = form.grids.filter(g => !gridIdsInSection.has(g.id));
+          form.sections = form.sections.filter(s => s !== name);
+          persist(); rerenderForm();
+        }
+        return;
+      }
+      if (e.target.id === 'addSectionBtn') {
+        const name = prompt('Name this new section:');
+        if (!name) return;
+        if (form.sections.includes(name)) { alert('A section with that name already exists.'); return; }
+        form.sections.push(name);
+        const id = newId('field');
+        form.fields.push({ id, section: name, name: 'New field', instructions: '', type: '', definition: '', units: '', calc: '', visibility: '', changelog: '', flagged: false, flagNote: '', gridId: null, gridColIndex: null });
+        focusFieldId = id;
+        persist(); rerenderForm();
+      }
+    });
+
+    fieldsArea.addEventListener('input', (e) => {
+      const target = e.target;
+      if (!(teamMode && editMode) || target.getAttribute('contenteditable') !== 'true') return;
+      const text = target.textContent;
+      if (target.dataset.role === 'gridSample') {
+        const grid = form.grids.find(g => g.id === target.dataset.gridId);
+        if (grid) grid.sample[Number(target.dataset.colIndex)] = text;
+        persist();
+        return;
+      }
+      const field = fieldById(target.dataset.id);
+      if (!field) return;
+      if (target.dataset.role === 'name') field.name = text;
+      else if (target.dataset.role === 'spec') field[target.dataset.key] = text;
+      persist();
+    });
+
+    renderFields();
+  }
+
+  function exportFormCsv(form) {
+    const rows = [CSV_HEADERS];
+    const fieldById = id => form.fields.find(f => f.id === id);
+    form.fields.forEach(f => {
+      let table = '';
+      let sample = '';
+      if (f.gridId) {
+        const grid = form.grids.find(g => g.id === f.gridId);
+        table = grid.label;
+        sample = grid.sample[f.gridColIndex] || '';
+      }
+      rows.push([
+        '', form.name, f.section, table, f.name, f.instructions, f.type, f.definition,
+        f.units, f.calc, f.visibility, f.changelog, f.flagged ? 'Yes' : 'No', f.flagNote, sample,
+      ]);
+    });
+    const csv = unparseCsv(rows);
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = form.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function renderAll() {
+    document.body.classList.toggle('edit-mode', teamMode && editMode);
+    renderSidebar();
+    renderTopBar();
+    contentEl.innerHTML = '';
+    if (view.type === 'home') renderHome();
+    else renderFormPage();
+  }
+
+  renderAll();
+})();
+</script>
+
+</body>
+</html>
