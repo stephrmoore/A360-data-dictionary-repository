@@ -486,6 +486,88 @@
           ]
         }
       ]
+    },
+    {
+      "id": "sensor-mtni16ki-p59lu",
+      "name": "Polar",
+      "forms": [
+        {
+          "id": "form-mtni16ki-c1rxb",
+          "name": "Whoop Recovery Summary",
+          "subtitle": "Data dictionary",
+          "sourceNote": "Uploaded from a data-dictionary CSV.",
+          "fields": [
+            {
+              "id": "field-mtni16ki-symxq",
+              "section": "New Section",
+              "name": "Recovery Score",
+              "instructions": "Single-line number box",
+              "type": "Numeric (0-100)",
+              "definition": "Overall recovery score for the day",
+              "units": "%",
+              "calc": "N/A",
+              "visibility": "Coach & Athlete",
+              "changelog": "v1.0 — [date] — Initial documentation.",
+              "flagged": false,
+              "flagNote": "",
+              "gridId": null,
+              "gridColIndex": null
+            },
+            {
+              "id": "field-mtni16ki-43kdz",
+              "section": "HRV Samples",
+              "name": "Time of Reading",
+              "instructions": "Grid column, one row per sample",
+              "type": "Time",
+              "definition": "Timestamp of the HRV sample",
+              "units": "Time",
+              "calc": "N/A",
+              "visibility": "Coach/Admin",
+              "changelog": "v1.0 — [date] — Initial documentation.",
+              "flagged": false,
+              "flagNote": "",
+              "gridId": "grid-mtni16ki-umy07",
+              "gridColIndex": 0
+            },
+            {
+              "id": "field-mtni16ki-6m995",
+              "section": "HRV Samples",
+              "name": "HRV (ms)",
+              "instructions": "Grid column, numeric value per row",
+              "type": "Numeric",
+              "definition": "Heart rate variability reading in milliseconds",
+              "units": "ms",
+              "calc": "N/A",
+              "visibility": "Coach/Admin",
+              "changelog": "v1.0 — [date] — Initial documentation.",
+              "flagged": false,
+              "flagNote": "",
+              "gridId": "grid-mtni16ki-umy07",
+              "gridColIndex": 1
+            }
+          ],
+          "grids": [
+            {
+              "id": "grid-mtni16ki-umy07",
+              "label": "HRV Reading",
+              "section": "HRV Samples",
+              "columnIds": [
+                "field-mtni16ki-43kdz",
+                "field-mtni16ki-6m995"
+              ],
+              "sample": [
+                "6:14 AM",
+                "62"
+              ],
+              "sampleNote": ""
+            }
+          ],
+          "sections": [
+            "New Section",
+            "HRV Samples"
+          ]
+        }
+      ]
     }
   ]
 }
